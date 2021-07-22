@@ -16,4 +16,5 @@ implementation:
       --no-warn-script-location 'kfp' --user) && "$0" "$@"
     - python3 
     - concat: [ { inputPath: repo_dir}, {inputValue: component_path}, "/src/component.py"]
-    - concat: [ {outputPath: component_specification}, {inputValue: component_path}]
+    - {outputPath: component_specification}
+  
