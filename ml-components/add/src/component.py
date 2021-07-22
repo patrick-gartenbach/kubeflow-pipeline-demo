@@ -6,9 +6,12 @@ def add(a: float, b: float) -> float:
 if __name__ == '__main__':
     import sys
     import kfp.components as comp    
-    
+    import os
+
+    component_path = os.listdir(sys.argv[1])+sys.argv[2]
+
     comp.create_component_from_func(
     func=add,
     base_image='python:3.7', # Optional
-    output_component_file= sys.argv[1], 
+    output_component_file= component_path, 
 )
