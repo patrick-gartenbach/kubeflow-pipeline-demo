@@ -8,7 +8,7 @@ if __name__ == '__main__':
     import kfp.components as comp    
     import os
 
-    component_path = os.listdir(sys.argv[1])+sys.argv[2]
+    component_path = sys.argv[1]+sys.argv[2]
 
     comp.create_component_from_func(
     func=add,
