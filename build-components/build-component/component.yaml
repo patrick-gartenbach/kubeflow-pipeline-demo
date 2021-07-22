@@ -1,10 +1,10 @@
-name: build kubeflow component
+name: build component
 description: Builds a specified kubeflow component and returns the component specification
 inputs:
-- {name: Repo dir, type: Directory}
-- {name: component path, type: String}
+- {name: repo_dir, type: Directory}
+- {name: component_path, type: str}
 outputs:
-- {name: component specification, type: yaml}
+- {name: component_specification, type: YAML}
 implementation:
   container:
     image: python:3.7
@@ -13,7 +13,7 @@ implementation:
     - -c
     - (PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location
       'kfp' || PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet
-      --no-warn-script-location 'kfp' --user) &&
+      --no-warn-script-location 'kfp' --user) && "$0" "$@"
     - python3 
-    - inputValue: component path
-    - outputPath: component specification
+    - concat: [ { inputPath: repo_dir}, {inputValue: component_path}, "/src/component.py"]
+    - concat: [ {outputPath: component_specification}, {inputValue: component_path}]
