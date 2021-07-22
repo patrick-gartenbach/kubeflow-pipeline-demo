@@ -2,7 +2,7 @@ name: build component
 description: Builds a specified kubeflow component and returns the component specification
 inputs:
 - {name: repo_dir, type: Directory}
-- {name: component_path, type: str}
+- {name: component_path, type: String}
 outputs:
 - {name: component_specification, type: YAML}
 implementation:

@@ -34,8 +34,8 @@ implementation:
       pipeline_package_path = sys.argv[2] + "/" + sys.argv[1] + ".tar.gz"
       add_op = comp.load_component_from_file(add_comp_path)
 
-      def pipeline(a='a',b='7'):
-          add_task = add_op(a, 4)
+      def pipeline(a='4',b='7'):
+          add_task = add_op(a, b)
       kfp.compiler.Compiler().compile(pipeline,pipeline_package_path)
     - {inputValue: pipeline_name}
     - {outputPath: pipeline_package}

@@ -1,11 +1,9 @@
-name: upload ml-pipeline
-description: uploads a compiled pipeline
+name: run pipeline
+description: runs an uploaded pipeline
 inputs:
-- {name: pipeline_package, type: tar.gz}
 - {name: pipeline_name, type: String}
-- {name: pipeline_version_name, type: String}
-outputs:
-- {name: pipeline_name, type: String}
+- {name: experiment_name, type: String}
+- {name: pipeline_parameter, type: Bool }
 implementation:
   container:
     image: python:3.7
@@ -20,10 +18,12 @@ implementation:
     - -c  # Inline scripts are easy, but have size limitaions and the error traces do not show source lines.
     - |
       import kfp
-      import sys   
-      pipeline_package = sys.argv[1] + "/" + sys.argv[2] + ".tar.gz"
-      kfp.Client().upload_pipeline_version(pipeline_package_path=pipeline_package,pipeline_name=sys.argv[2],pipeline_version_name=sys.argv[3])
-      print(sys.argv[2])
-    - {inputPath: pipeline_package}
+      import sys
+      import ast
+      pipeline_id = kfp.Client().get_pipeline_id(sys.argv[1])
+      pipeline_parameter = ast.literal_eval(sys.argv[3])
+      experiment_id = kfp.Client().get_experiment(experiment_name=sys.argv[2]).id
+      kfp.Client().run_pipeline(pipeline_id=pipeline_id,experiment_id=experiment_id,job_name="ci/cd job",params=pipeline_parameter)
     - {inputValue: pipeline_name}
-    - {inputValue: pipeline_version_name}
+    - {inputValue: experiment_name}
+    - {inputValue: pipeline_parameter}
