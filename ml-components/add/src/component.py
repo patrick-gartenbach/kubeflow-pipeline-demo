@@ -15,4 +15,4 @@ if __name__ == '__main__':
     comp.create_component_from_func(
     func=add,
     base_image='python:3.7', # Optional
-    output_component_file= sys.argv[1])
+    output_component_file= sys.argv[1]+"/component.yaml")
