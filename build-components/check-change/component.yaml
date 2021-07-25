@@ -1,0 +1,32 @@
+name: check last push
+description: Checks if there was a push to the git since the last ci/cd pipeline run
+inputs:
+- {name: repo_dir, type: Directory}
+- {name: max_diff, type: Integer}
+
+outputs:
+- {name: change_detected, type: Boolean}
+implementation:
+  container:
+    image: alpine/git
+    command:
+    - sh
+    - -ec
+    - |
+      NOW=$(date +%s)
+      cd "$0"
+      LASTPUSH=$(git log -1 --format="%at")
+      mkdir -p "$(dirname "$2")" 
+      echo "Now: ${NOW}"
+      echo "Last push: ${LASTPUSH}"
+      DIFF=`expr ${NOW} - ${LASTPUSH}`
+      echo "Seconds since last push ${DIFF}"
+      if [ "${DIFF}" -lt "$1" ]; 
+      then
+        echo "True" > "$2"
+      else
+        echo "False" > "$2"
+      fi
+    - inputPath: repo_dir
+    - inputValue: max_diff
+    - outputPath: change_detected
