@@ -1,12 +1,11 @@
 name: check last commit
-description: Checks if there was a push to the git since the last ci/cd pipeline run
+description: Checks if there was a commit to the git in the max diff time spann
 inputs:
-- {name: repo_dir, type: Directory}
-- {name: max_diff, type: Integer}
-
+- {name: Repo dir, type: Directory}
+- {name: Max diff, type: Integer}
 outputs:
-- {name: change_detected, type: Boolean}
-- {name: commit_hash, type: String}
+- {name: Change detected, type: Boolean}
+- {name: Commit hash, type: String}
 implementation:
   container:
     image: alpine/git
@@ -14,17 +13,21 @@ implementation:
     - sh
     - -ec
     - |
-      NOW=$(date +%s)
       cd "$0" 
+      
+      NOW=$(date +%s)
       LASTPUSH=$(git log -1 --format="%at")
       echo "Now: ${NOW}"
       echo "Last push: ${LASTPUSH}"
       DIFF=`expr ${NOW} - ${LASTPUSH}`
-      echo "Seconds since last push ${DIFF}"   
+      echo "Seconds since last push ${DIFF}" 
+
       HASH=$(git rev-parse HEAD)
       echo "HASH: ${HASH}"
+
       mkdir -p "$(dirname "$2")" 
       mkdir -p "$(dirname "$3")" 
+      
       if [ "${DIFF}" -lt "$1" ]; 
       then
         echo "True" > "$2"
@@ -33,7 +36,7 @@ implementation:
         echo "False" > "$2"
         echo "${HASH}" > "$3"
       fi
-    - inputPath: repo_dir
-    - inputValue: max_diff
-    - outputPath: change_detected
-    - outputPath: commit_hash
+    - inputPath: Repo dir
+    - inputValue: Max diff
+    - outputPath: Change detected
+    - outputPath: Commit hash
