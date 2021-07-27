@@ -1,10 +1,11 @@
-name: build component
+name: build component from python function
 description: Builds a specified kubeflow component and returns the component specification
 inputs:
-- {name: repo_dir, type: Directory}
-- {name: component_path, type: String}
+- {name: Repo dir, type: Directory}
+- {name: Component paths, type: List}
+- {name: Component names, type: List}
 outputs:
-- {name: component_specification, type: YAML}
+- {name: Component specification dir, type: Directory}
 implementation:
   container:
     image: python:3.7
@@ -14,7 +15,34 @@ implementation:
     - (PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location
       'kfp' || PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet
       --no-warn-script-location 'kfp' --user) && "$0" "$@"
-    - python3 
-    - concat: [ { inputPath: repo_dir}, {inputValue: component_path}, "/src/component.py"]
-    - {outputPath: component_specification}
+    - python3
+    - -u  # Auto-flush. We want the logs to appear in the console immediately.
+    - -c  # Inline scripts are easy, but have size limitaions and the error traces do not show source lines.
+    - |
+      import sys
+      import ast
+      import importlib
+      from pathlib import Path
+      import kfp.components as comp
+      component_path_list = ast.literal_eval(sys.argv[2])
+      component_name_list = ast.literal_eval(sys.argv[3])
+      for component_path, component_name in zip(component_path_list,component_name_list):
+          input_source_path = sys.argv[1]+component_path+"/component"
+          # delete leading /
+          input_source_path = input_source_path[1:]
+          # exchange / for .
+          input_source_path = input_source_path.replace("/",".")
+          # load module with the created path
+          component_module = importlib.import_module(input_source_path) 
+          # specify output path for the yaml
+          output_component_path = sys.argv[4]+"/"+component_name
+          # Create ouput path
+          Path(sys.argv[4]+"/"+component_name).mkdir(parents=True, exist_ok=True)
+          # Compile component
+          comp.create_component_from_func(func=getattr(component_module,component_name),base_image='python:3.7',output_component_file= output_component_path+"/component.yaml")
+       
+    - { inputPath: Repo dir}
+    - {inputValue: Component paths}
+    - {inputValue: Component names}
+    - {outputPath: Component specification dir}
   

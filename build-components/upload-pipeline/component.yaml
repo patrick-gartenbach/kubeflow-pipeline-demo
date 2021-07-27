@@ -1,11 +1,9 @@
 name: upload ml-pipeline
 description: uploads a compiled pipeline
 inputs:
-- {name: pipeline_package, type: tar.gz}
-- {name: pipeline_name, type: String}
-- {name: pipeline_version_name, type: String}
-outputs:
-- {name: pipeline_name, type: String}
+- {name: Pipeline package, type: tar.gz}
+- {name: Pipeline name, type: String}
+- {name: Pipeline version name, type: String}
 implementation:
   container:
     image: python:3.7
@@ -24,6 +22,6 @@ implementation:
       pipeline_package = sys.argv[1] + "/" + sys.argv[2] + ".tar.gz"
       kfp.Client().upload_pipeline_version(pipeline_package_path=pipeline_package,pipeline_name=sys.argv[2],pipeline_version_name=sys.argv[3])
       print(sys.argv[2])
-    - {inputPath: pipeline_package}
-    - {inputValue: pipeline_name}
-    - {inputValue: pipeline_version_name}
+    - {inputPath: Pipeline package}
+    - {inputValue: Pipeline name}
+    - {inputValue: Pipeline version name}

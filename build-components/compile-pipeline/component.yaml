@@ -1,10 +1,13 @@
 name: compile pipeline
 description: Loads all components and compiles the pipeline
 inputs:
-- {name: add_component, type: YAML}
-- {name: pipeline_name, type: String}
+- {name: Component specification dir, type: Directory}
+- {name: Repo dir, type: Directory}
+- {name: Component names, type: List}
+- {name: Pipeline name, type: String}
+- {name: Pipeline code, type: String}
 outputs:
-- {name: pipeline_package, type: tar.gz}
+- {name: Pipeline package, type: tar.gz}
 implementation:
   container:
     image: python:3.7
@@ -20,23 +23,22 @@ implementation:
     - |
       import kfp.components as comp 
       import kfp
-      import sys 
+      import sys
+      import ast
+      import importlib
       import kfp.dsl as dsl
-      import os
       import kfp.components as comp    
-      try:
-         os.makedirs(sys.argv[2])    
-         print("Directory " , sys.argv[2] ,  " Created ")
-      except FileExistsError:
-         print("Directory " , sys.argv[2] ,  " already exists")
-      
-      add_comp_path = sys.argv[3] + "/component.yaml"
-      pipeline_package_path = sys.argv[2] + "/" + sys.argv[1] + ".tar.gz"
-      add_op = comp.load_component_from_file(add_comp_path)
-
-      def pipeline(a='4',b='7'):
-          add_task = add_op(a, b)
-      kfp.compiler.Compiler().compile(pipeline,pipeline_package_path)
-    - {inputValue: pipeline_name}
-    - {outputPath: pipeline_package}
-    - {inputPath: add_component}
+      from pathlib import Path     
+      Path(sys.argv[6]).mkdir(parents=True, exist_ok=True)
+      component_name_list = ast.literal_eval(sys.argv[3])
+      for component_name in component_name_list:  
+          globals()[component_name] = comp.load_component_from_file(sys.argv[1]+"/"+component_name+"/component.yaml")
+      pipeline_package_path = sys.argv[6] + "/" + sys.argv[4] + ".tar.gz"
+      exec(sys.argv[5])
+      kfp.compiler.Compiler().compile(locals()[sys.argv[4]],pipeline_package_path)
+    - { inputPath: Component specification dir}
+    - { inputPath: Repo dir}
+    - {inputValue: Component names}
+    - {inputValue: Pipeline name}
+    - {inputValue: Pipeline code}
+    - {outputPath: Pipeline package}
