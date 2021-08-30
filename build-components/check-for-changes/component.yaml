@@ -38,5 +38,5 @@ implementation:
       fi
     - inputPath: Repo dir
     - inputValue: Max diff
-    - outputPath: Change detected
-    - outputPath: Commit hash
+    - outputValue: Change detected
+    - outputValue: Commit hash
