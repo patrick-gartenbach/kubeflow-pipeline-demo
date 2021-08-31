@@ -2,7 +2,6 @@ name: compile pipeline
 description: Loads all components and compiles the pipeline
 inputs:
 - {name: Component specification dir, type: Directory}
-- {name: Repo dir, type: Directory}
 - {name: Component names, type: List}
 - {name: Pipeline name, type: String}
 - {name: Pipeline code, type: String}
@@ -29,15 +28,14 @@ implementation:
       import kfp.dsl as dsl
       import kfp.components as comp    
       from pathlib import Path     
-      Path(sys.argv[6]).mkdir(parents=True, exist_ok=True)
-      component_name_list = ast.literal_eval(sys.argv[3])
+      Path(sys.argv[5]).mkdir(parents=True, exist_ok=True)
+      component_name_list = ast.literal_eval(sys.argv[2])
       for component_name in component_name_list:  
           globals()[component_name] = comp.load_component_from_file(sys.argv[1]+"/"+component_name+"/component.yaml")
-      pipeline_package_path = sys.argv[6] + "/" + sys.argv[4] + ".tar.gz"
-      exec(sys.argv[5])
-      kfp.compiler.Compiler().compile(locals()[sys.argv[4]],pipeline_package_path)
+      pipeline_package_path = sys.argv[5] + "/" + sys.argv[3] + ".tar.gz"
+      exec(sys.argv[4])
+      kfp.compiler.Compiler().compile(locals()[sys.argv[3]],pipeline_package_path)
     - { inputPath: Component specification dir}
-    - { inputPath: Repo dir}
     - {inputValue: Component names}
     - {inputValue: Pipeline name}
     - {inputValue: Pipeline code}
