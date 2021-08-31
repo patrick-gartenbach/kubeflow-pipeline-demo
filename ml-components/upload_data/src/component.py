@@ -1,4 +1,5 @@
 
+import kfp.components as comp
 def upload_data(minio_host,access_k,secret_k,bucket,name,train_data_path: comp.InputPath("CSV"),test_data_path: comp.InputPath("CSV")) -> str:
     from minio import Minio
     import time

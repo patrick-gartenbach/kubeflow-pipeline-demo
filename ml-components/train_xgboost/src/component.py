@@ -1,3 +1,4 @@
+import kfp.components as comp
 def train_xgboost(train_data_path: comp.InputPath("CSV"),label_column_name,model_path: comp.OutputPath("XGBoost Model")):
     import pandas as pd
     import xgboost as xgb

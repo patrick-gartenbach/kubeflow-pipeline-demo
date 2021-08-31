@@ -1,3 +1,4 @@
+import kfp.components as comp
 def upload_model(minio_host,access_k,secret_k,bucket,name,dataset,model_path: comp.InputPath("XGBoost Model")):
     from minio import Minio
     import time

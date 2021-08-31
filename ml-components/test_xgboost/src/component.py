@@ -1,5 +1,5 @@
 from typing import NamedTuple
-
+import kfp.components as comp
 def test_xgboost(test_data_path: comp.InputPath("CSV"),label_column_name,model_path: comp.InputPath("XGBoost Model"))-> NamedTuple('Outputs', [('mlpipeline_metrics', 'Metrics'),]):
     import pandas as pd
     import xgboost as xgb

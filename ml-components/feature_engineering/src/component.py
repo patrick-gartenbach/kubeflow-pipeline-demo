@@ -1,3 +1,4 @@
+import kfp.components as comp
 def feature_engineering(LIVY_URL,dataset_name,train_data_path: comp.OutputPath("CSV"),test_data_path: comp.OutputPath("CSV")):
     from livy import LivySession
     import pandas as pd
