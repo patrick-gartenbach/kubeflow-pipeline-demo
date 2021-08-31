@@ -40,7 +40,7 @@ implementation:
           # Create ouput path
           Path(sys.argv[5]+"/"+component_name).mkdir(parents=True, exist_ok=True)
           # Compile component
-          comp.create_component_from_func(func=getattr(component_module,component_name),base_image='python:3.7',output_component_file= output_component_path+"/component.yaml")
+          comp.create_component_from_func(func=getattr(component_module,component_name),base_image='python:3.7',packages_to_install=sys.argv[4],output_component_file= output_component_path+"/component.yaml")
        
     - { inputPath: Repo dir}
     - {inputValue: Component paths}
