@@ -1,6 +1,6 @@
 def clean_data(LIVY_URL,dataset_name) -> str:
     from livy import LivySession
-    with LivySession.create(url=LIVY_URL,executor_memory='3g',executor_cores=1,num_executors=2) as session: #spark_conf={'spark.sql.catalogImplementation': 'hive'}) as session:
+    with LivySession.create(url=LIVY_URL,executor_memory='3g',executor_cores=1,num_executors=2) as session:
         # Workaround to change spark config
         session.run("from pyspark.sql.functions import year, month, dayofmonth")
         session.run("from pyspark.conf import SparkConf;from pyspark.sql import SparkSession; spark.sparkContext._conf.getAll(); conf = spark.sparkContext._conf.setAll([('spark.sql.catalogImplementation', 'hive'),('spark.driver.memory', '2000M')]); spark.sparkContext.stop(); spark = SparkSession.builder.config(conf=conf).getOrCreate(); spark.sparkContext._conf.getAll()")
