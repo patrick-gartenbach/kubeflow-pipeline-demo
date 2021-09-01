@@ -25,7 +25,7 @@ implementation:
       print(pipeline_package)
       print(pipeline_n)
       print(pipeline_v)
-      kfp.Client().upload_pipeline_version(pipeline_package_path=pipeline_package,pipeline_name=pipeline_n,pipeline_version_name=pipeline_v)
+      kfp.Client().pipeline_uploads.upload_pipeline_version(pipeline_package_path=pipeline_package,pipeline_name=pipeline_n,pipeline_version_name=pipeline_v)
       print(sys.argv[2])
     - {inputPath: Pipeline package}
     - {inputValue: Pipeline name}
