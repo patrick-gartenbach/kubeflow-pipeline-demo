@@ -17,7 +17,7 @@ implementation:
     - -u  # Auto-flush. We want the logs to appear in the console immediately.
     - -c  # Inline scripts are easy, but have size limitaions and the error traces do not show source lines.
     - |
-    #
+    #f
       import kfp
       import sys   
       pipeline_package = sys.argv[1] + "/" + sys.argv[2] + ".tar.gz"
