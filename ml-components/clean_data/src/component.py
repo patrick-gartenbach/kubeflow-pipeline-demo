@@ -1,4 +1,4 @@
-def clean_data(LIVY_URL,dataset_name):
+def clean_data(LIVY_URL,dataset_name) -> str:
     from livy import LivySession
     with LivySession.create(url=LIVY_URL,executor_memory='3g',executor_cores=1,num_executors=2) as session: #spark_conf={'spark.sql.catalogImplementation': 'hive'}) as session:
         # Workaround to change spark config
