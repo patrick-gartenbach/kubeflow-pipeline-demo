@@ -20,12 +20,7 @@ implementation:
       import kfp
       import sys   
       pipeline_package = sys.argv[1] + "/" + sys.argv[2] + ".tar.gz"
-      pipeline_n = sys.argv[2]
-      pipeline_v = sys.argv[3]
-      print(pipeline_package)
-      print(pipeline_n)
-      print(pipeline_v)
-      kfp.Client().upload_pipeline_version(pipeline_package_path=pipeline_package,pipeline_name=pipeline_n,pipeline_version_name=pipeline_v)
+      kfp.Client().upload_pipeline_version(pipeline_package_path=pipeline_package,pipeline_name=sys.argv[2],pipeline_version_name=sys.argv[3])
       print(sys.argv[2])
     - {inputPath: Pipeline package}
     - {inputValue: Pipeline name}
