@@ -14,8 +14,8 @@ implementation:
     - sh
     - -c
     - (PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location
-      'kfp==1.6.6' || PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet
-      --no-warn-script-location 'kfp==1.6.6' --user) && "$0" "$@"
+      'kfp==1.7' || PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet
+      --no-warn-script-location 'kfp==1.7' --user) && "$0" "$@"
     - python3
     - -u  # Auto-flush. We want the logs to appear in the console immediately.
     - -c  # Inline scripts are easy, but have size limitaions and the error traces do not show source lines.
@@ -27,6 +27,7 @@ implementation:
       import kfp.components as comp
       component_path_list = ast.literal_eval(sys.argv[2])
       component_name_list = ast.literal_eval(sys.argv[3])
+      component_depend_dict = ast.literal_eval(sys.argv[4])
       for component_path, component_name in zip(component_path_list,component_name_list):
           input_source_path = sys.argv[1]+component_path+"/component"
           # delete leading /
@@ -40,7 +41,8 @@ implementation:
           # Create ouput path
           Path(sys.argv[5]+"/"+component_name).mkdir(parents=True, exist_ok=True)
           # Compile component
-          comp.create_component_from_func(func=getattr(component_module,component_name),base_image='python:3.7',packages_to_install=sys.argv[4],output_component_file= output_component_path+"/component.yaml")
+          comp.create_component_from_func(func=getattr(component_module,component_name), base_image='python:3.7', packages_to_install=component_depend_dict[component_name], output_component_file= output_component_path+"/component.yaml")           
+                  
        
     - { inputPath: Repo dir}
     - {inputValue: Component paths}
