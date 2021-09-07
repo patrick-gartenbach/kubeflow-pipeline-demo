@@ -5,7 +5,7 @@ inputs:
 - {name: Component paths, type: List}
 - {name: Component names, type: List}
 - {name: Component dependencies, type: dict}
-outputs:
+outputs: 
 - {name: Component specification dir, type: Directory}
 implementation:
   container:
@@ -19,7 +19,7 @@ implementation:
     - python3
     - -u  # Auto-flush. We want the logs to appear in the console immediately.
     - -c  # Inline scripts are easy, but have size limitaions and the error traces do not show source lines.
-    - |
+    - | # test
       import sys
       import ast
       import importlib
