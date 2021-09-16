@@ -1,0 +1,43 @@
+postgresql:
+  #persistence.enabled: false
+  volumePermissions:
+    enabled: true
+  readReplicas.resources:
+  limits: 
+    memory: "4Gi"
+    cpu: "2"
+  #livenessProbe.enabled: false
+  #readinessProbe.enabled: false
+  livenessProbe.periodSeconds: 30
+  startupProbe.periodSeconds: 45
+  readinessProbe.periodSeconds: 30
+  postgresqlUsername: hive
+  postgresqlPassword: hive
+  postgresqlDatabase: metastore
+  initdbScriptsConfigMap: hive-metastore-postgresql-init
+  image:
+  repository: bde2020/hive
+  tag: 2.3.2-postgresql-metastore
+  pullPolicy: IfNotPresent
+  resources:
+    limits: 
+      memory: "4Gi"
+      cpu: "2"
+
+initContainers:
+  resources:
+    limits: 
+      memory: "4Gi"
+      cpu: "2"
+
+resources:
+  limits: 
+    memory: "4Gi"
+    cpu: "2"
+
+conf:
+  hiveSite:
+    hive.metastore.warehouse.dir: dtap://TenantStorage/warehouse
+    hive.aux.jars.path: /opt/bdfs/bluedata-dtap.jar
+    fs.dtap.impl: com.bluedata.hadoop.bdfs.Bdfs 
+    fs.AbstractFileSystem.dtap.impl: com.bluedata.hadoop.bdfs.BdAbstractFS
